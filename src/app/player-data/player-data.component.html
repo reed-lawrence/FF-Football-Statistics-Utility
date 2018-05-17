@@ -1,0 +1,64 @@
+<div class="container">
+  <div class="row mt-3">
+    <div class="col">
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {{chosenPosition}}
+          </button>
+          <div class="dropdown-menu">
+            <button class="dropdown-item" type="button" (click)="SetChosenPosition('All')">All</button>
+            <div role="separator" class="dropdown-divider"></div>
+            <button class="dropdown-item" type="button" (click)="SetChosenPosition('QB')">QB</button>
+            <div role="separator" class="dropdown-divider"></div>
+            <button class="dropdown-item disabled" type="button">(Coming soon)</button>
+            <button class="dropdown-item" type="button" (click)="SetChosenPosition('RB')">RB</button>
+            <button class="dropdown-item disabled" type="button">WR</button>
+            <button class="dropdown-item disabled" type="button">TE</button>
+            <button class="dropdown-item disabled" type="button">K</button>
+          </div>
+        </div>
+        <div class="dropdown" id="player-search-input-container">
+          <input type="text" class="form-control dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+            aria-label="Text input with dropdown button" #playerSearchInput (keyup)="PerformNameFilter(playerSearchInput.value); DropdownTypeOpenFix(playerSearchInput)">
+          <div class="dropdown-menu" aria-labelledby="">
+            <button class="dropdown-item" type="button" *ngFor="let player of allPlayersNameFiltered" (click)="AddPlayer(player)">{{player.Position}} - {{player.Name}}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true"
+          aria-expanded="false">
+          Sort By
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+          <button class="dropdown-item" type="button" (click)="SortPlotsByMedian()">Median</button>
+          <button class="dropdown-item" type="button" (click)="SortPlotsByMean()">Mean</button>
+          <button class="dropdown-item" type="button" (click)="SortPlotsByCeiling()">Highest Avg Ceiling</button>
+          <button class="dropdown-item" type="button" (click)="SortPlotsByFloor()">Highest Avg Floor</button>
+          <button class="dropdown-item" type="button" (click)="SortPlotsByTotal()">Total Points</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-8">
+      <div #boxOutput></div>
+    </div>
+    <div class="col-4">
+      <div class="card">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item" *ngFor="let player of selectedPlayers">
+              {{player.Name}} <i class="fa fa-times player-remove" aria-hidden="true" (click)="RemovePlayer(player)"></i>
+            </li>
+          </ul>
+        </div>
+    </div>
+  </div>
+
+</div>

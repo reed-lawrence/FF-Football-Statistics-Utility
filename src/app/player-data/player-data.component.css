@@ -1,0 +1,24 @@
+#player-search-input-container {
+  position: relative;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  width: 1%;
+  margin-bottom: 0;
+}
+
+#player-search-input-container .form-control {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.player-remove {
+  position: absolute;
+  right: 1em;
+  top: 1em;
+  color: #545454;
+}
+
+.player-remove:hover{
+  cursor: pointer;
+  color: #333333;
+}
