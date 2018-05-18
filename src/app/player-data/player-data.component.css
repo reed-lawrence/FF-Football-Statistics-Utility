@@ -18,7 +18,37 @@
   color: #545454;
 }
 
-.player-remove:hover{
+.player-remove:hover {
   cursor: pointer;
   color: #333333;
+}
+
+#selected-players-container {
+  overflow: auto;
+  height: 400px;
+  padding: 0.75em;
+  border: solid #dedede 1px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+#selected-players-header {
+  background-color: #efefef;
+  color: #333333;
+  text-align: center;
+  font-size: 1.25em;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  border: solid #dedede 1px;
+  border-bottom: none;
+}
+
+.input-group-prepend button {
+  background-color: #efefef;
+  color: #6b747c;
+  border-color: #ced4db;
+}
+
+.btn-outline-secondary {
+  border-color: #dedede;
 }

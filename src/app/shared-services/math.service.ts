@@ -9,6 +9,14 @@ export class MathService {
     return Math.max.apply(null, array);
   }
 
+  GetMaxFromDatum(allDatum: Plotly.Datum[] | Plotly.Datum[][] | Plotly.TypedArray): number {
+    let allNumbers: number[] = [];
+    for (let i = 0; i < allDatum.length; i++) {
+      allNumbers.push(parseInt(allDatum[i].valueOf().toString()));
+    }
+    return Math.max.apply(null, allNumbers);
+  }
+
   GetMin(array: number[]): number {
     return Math.min.apply(null, array);
   }
@@ -73,7 +81,7 @@ export class MathService {
     const pos = ((array.length) - 1) * quartile;
     const base = Math.floor(pos);
     const rest = pos - base;
-    if ((array[base + 1] !== null && array[base + 1] !== undefined)){
+    if ((array[base + 1] !== null && array[base + 1] !== undefined)) {
       return array[base] + rest * (array[base + 1] - array[base]);
     } else {
       return array[base];

@@ -29,6 +29,8 @@ export class PlayerDataComponent implements OnInit {
   allPlayersNameFiltered: IPlayer[];
   selectedPlayers: IPlayer[] = [];
 
+  comparePlayers: IPlayer[] = [];
+
 
   chosenPosition = 'All';
   scoringRules: IScoring = {
@@ -43,10 +45,14 @@ export class PlayerDataComponent implements OnInit {
     ReYaInterval: 10,
     ReTD: 6
   }
+
+  scoringRulesEdit: IScoring;
+
   boxPlots: Plotly.Data[] = [];
 
   @ViewChild('boxOutput') boxOutputEle: ElementRef;
   @ViewChild('playerSearchInput') playerSearchInputEle: ElementRef;
+  @ViewChild('scoringModal') scoringModalEle: ElementRef;
 
 
   /**
@@ -162,7 +168,7 @@ export class PlayerDataComponent implements OnInit {
    * and triggers the RemovePlot() function
    * @param player Player to remove
    */
-  RemovePlayer(player: IPlayer){
+  RemovePlayer(player: IPlayer) {
 
     // Find the index of the player in the selected players array
     const playerIndex = this.selectedPlayers.findIndex(p => p.Id === player.Id);
@@ -179,7 +185,7 @@ export class PlayerDataComponent implements OnInit {
    * and triggers a re-draw of the plots
    * @param player Player to remove
    */
-  RemovePlot(player: IPlayer){
+  RemovePlot(player: IPlayer) {
 
     // Find the index of the player in the box plots array
     const plotIndex = this.boxPlots.findIndex(p => p.playerId === player.Id);
@@ -323,12 +329,23 @@ export class PlayerDataComponent implements OnInit {
    * @param plotData Array of Plotly Data types
    */
   DrawPlot(plotData: Plotly.Data[]) {
+    
+    // Get the max for each player
+    let plotMaxDatas: number[] = []
+    for (let i = 0; i < plotData.length; i++) {
+      plotMaxDatas.push(this._mathService.GetMaxFromDatum(plotData[i].y));
+    }
+
+    // Get the total max point val for all plots 
+    const maxPointVal = this._mathService.GetMax(plotMaxDatas) + 5;
+
+    // Set the layout of the plot
     let layout = {
       xaxis: {
         showticklabels: false
       },
       yaxis: {
-        range: [0, 40]
+        range: [0, maxPointVal]
       },
       autosize: true,
       margin: {
@@ -347,8 +364,33 @@ export class PlayerDataComponent implements OnInit {
     Plotly.newPlot(this.boxOutputEle.nativeElement, plotData, layout, config);
   }
 
+  ToggleScoringModal() {
+    $(this.scoringModalEle.nativeElement).modal('toggle');
+  }
+
+  SaveScoringRules(newScoringRules: IScoring) {
+    console.log('SaveScoringRules called');
+
+    // Set the new scoring rules - quick and efficient breaking of potential object references
+    this.scoringRules = JSON.parse(JSON.stringify(newScoringRules));
+
+    // Reset the box plots
+    this.boxPlots = [];
+
+    // Re-add all of the players to the boxplots
+    for (let i = 0; i < this.selectedPlayers.length; i++) {
+      this.AddPlayerPlot(this.selectedPlayers[i], this.scoringRules);
+    }
+
+    this.ToggleScoringModal();
+  }
+
+
+
   ngOnInit() {
     this.GetAllPlayers();
+    this.DrawPlot(this.boxPlots);
+    this.scoringRulesEdit = this.scoringRules;
   }
 
 }
