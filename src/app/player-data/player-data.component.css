@@ -43,7 +43,7 @@
   border-bottom: none;
 }
 
-.input-group-prepend button {
+.input-group-prepend > button {
   background-color: #efefef;
   color: #6b747c;
   border-color: #ced4db;

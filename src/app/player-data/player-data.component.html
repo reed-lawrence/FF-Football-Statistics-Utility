@@ -96,12 +96,14 @@
       </div>
     </div>
   </div>
+
   <div class="row mb-3">
-    <div class="col-2">
+    <div class="col-6">
       <div class="dropdown">
         <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true"
           aria-expanded="false">
-          Sort By
+          <span *ngIf="chosenSort === 'none'">Sort By</span>
+          <span *ngIf="chosenSort !== 'none'" class="text-capitalize">{{chosenSort}}</span>
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
           <button class="dropdown-item" type="button" (click)="SortPlotsByMedian()">Median</button>
@@ -112,16 +114,16 @@
         </div>
       </div>
     </div>
-    <div class="col-2">
-      <button class="btn btn-primary" (click)="ToggleScoringModal()">Scoring Rules</button>
+    <div class="col-6">
+      <button class="btn btn-primary" (click)="ToggleScoringModal()" style="float: right">Scoring Rules</button>
     </div>
   </div>
 
   <div class="row">
-    <div class="col-8">
+    <div class="col-md-8">
       <div #boxOutput></div>
     </div>
-    <div class="col-4">
+    <div class="col-md-4">
       <div id="selected-players-header">Players</div>
       <div id="selected-players-container">
         <div class="card" *ngIf="selectedPlayers.length > 0">

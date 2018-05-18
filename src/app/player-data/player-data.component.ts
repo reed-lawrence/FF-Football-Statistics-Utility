@@ -29,10 +29,8 @@ export class PlayerDataComponent implements OnInit {
   allPlayersNameFiltered: IPlayer[];
   selectedPlayers: IPlayer[] = [];
 
-  comparePlayers: IPlayer[] = [];
-
-
   chosenPosition = 'All';
+  chosenSort = 'none';
   scoringRules: IScoring = {
     PaYa: 1,
     PaYaInterval: 25,
@@ -160,6 +158,10 @@ export class PlayerDataComponent implements OnInit {
 
       // Call the async function to get the player game data, passing in the component scoring rules
       this.GetPlayerData(player, this.scoringRules);
+
+      // Reset the search bar and name search
+      $(this.playerSearchInputEle.nativeElement).val('');
+      this.PerformNameFilter('');
     }
   }
 
@@ -234,6 +236,27 @@ export class PlayerDataComponent implements OnInit {
 
     // Redraw the plots
     this.DrawPlot(this.boxPlots);
+
+    switch (this.chosenSort) {
+      case 'none':
+        this.DrawPlot(this.boxPlots);
+        break;
+      case 'ceiling':
+        this.SortPlotsByCeiling();
+        break;
+      case 'floor':
+        this.SortPlotsByFloor();
+        break;
+      case 'mean':
+        this.SortPlotsByMean();
+        break;
+      case 'median':
+        this.SortPlotsByMedian();
+        break;
+      case 'total':
+        this.SortPlotsByTotal();
+        break;
+    }
   }
 
 
@@ -250,6 +273,9 @@ export class PlayerDataComponent implements OnInit {
 
       return aMedian > bMedian ? -1 : aMedian < bMedian ? 1 : 0
     });
+
+    // Set the component-level chosen sort value
+    this.chosenSort = 'median';
 
     // Redraw the plots
     this.DrawPlot(this.boxPlots);
@@ -269,6 +295,9 @@ export class PlayerDataComponent implements OnInit {
       return aMean > bMean ? -1 : aMean < bMean ? 1 : 0
     });
 
+    // Set the component-level chosen sort value
+    this.chosenSort = 'mean';
+
     // Redraw the plots
     this.DrawPlot(this.boxPlots);
   }
@@ -286,6 +315,9 @@ export class PlayerDataComponent implements OnInit {
 
       return aCeiling > bCeiling ? -1 : aCeiling < bCeiling ? 1 : 0
     });
+
+    // Set the component-level chosen sort value
+    this.chosenSort = 'ceiling';
 
     // Redraw the plots
     this.DrawPlot(this.boxPlots);
@@ -305,6 +337,9 @@ export class PlayerDataComponent implements OnInit {
       return aFloor > bFloor ? -1 : aFloor < bFloor ? 1 : 0
     });
 
+    // Set the component-level chosen sort value
+    this.chosenSort = 'floor';
+
     // Redraw the plots
     this.DrawPlot(this.boxPlots);
   }
@@ -314,11 +349,14 @@ export class PlayerDataComponent implements OnInit {
       const aAllScores = this._scoringService.GetAllScoresFromDatum(a.y);
       const bAllScores = this._scoringService.GetAllScoresFromDatum(b.y);
 
-      const aMax = this._mathService.GetMax(aAllScores);
-      const bMax = this._mathService.GetMax(bAllScores);
+      const aSum = this._mathService.GetSum(aAllScores);
+      const bSum = this._mathService.GetSum(bAllScores);
 
-      return aMax > bMax ? -1 : aMax < bMax ? 1 : 0
+      return aSum > bSum ? -1 : aSum < bSum ? 1 : 0
     });
+
+    // Set the component-level chosen sort value
+    this.chosenSort = 'total';
 
     // Redraw the plots
     this.DrawPlot(this.boxPlots);
@@ -329,7 +367,7 @@ export class PlayerDataComponent implements OnInit {
    * @param plotData Array of Plotly Data types
    */
   DrawPlot(plotData: Plotly.Data[]) {
-    
+
     // Get the max for each player
     let plotMaxDatas: number[] = []
     for (let i = 0; i < plotData.length; i++) {
@@ -364,10 +402,17 @@ export class PlayerDataComponent implements OnInit {
     Plotly.newPlot(this.boxOutputEle.nativeElement, plotData, layout, config);
   }
 
+  /**
+   * Function to toggle the scoring edit modal
+   */
   ToggleScoringModal() {
     $(this.scoringModalEle.nativeElement).modal('toggle');
   }
 
+  /**
+   * Function that 
+   * @param newScoringRules new scoring rules to be assigned to the component-level scoring rules
+   */
   SaveScoringRules(newScoringRules: IScoring) {
     console.log('SaveScoringRules called');
 
